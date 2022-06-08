@@ -1,1 +1,363 @@
 
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    #left {
+      width: 70%;
+      background-color: black;
+      float: left;
+    }
+
+    #Chart {
+      border: 1px solid #fff;
+      color: #ffffff;
+      width: 100%
+    }
+
+    #myChart {
+      width: 50%;
+    }
+
+    body {
+      background-color: black;
+    }
+
+    #right {
+      width: 30%;
+      float: right;
+    }
+
+    #input,#input1,#input2 {
+      text-align: center;
+    }
+    
+    h1 {
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      width: 70%;
+      height: 20px;
+      border-radius: 20px;
+      background: #fff;
+      opacity: 0.7;
+      transition: opacity .2s;
+
+
+    }
+
+
+    .slider:hover {
+      opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 70%;
+
+      background: #DDA0DD;
+      cursor: pointer;
+    }
+
+    .slider::-webkit-slider-runnable-track {}
+
+    .slider::-ms-fill-lower {
+      -webkit-appearance: none;
+
+      background-color: #DDA0DD;
+
+    }
+
+    p {
+      color: #fff
+    }
+
+    input[type="color"] {
+      border: none;
+      width: 30px;
+      height: 32px;
+      border-radius: 20px;
+      opacity: 0;
+    }
+
+    #color,
+    #color1,#color2 {
+      float: right;
+      background-color: #fff;
+      border-radius: 30%;
+    }
+    #color3{
+      background-color: #fff;
+      border-radius: 30%;
+      width: 30px;
+    }
+    input[type="text"]{
+      
+      width: 70%;
+    border-width: 0px;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+
+    outline: none;
+    background-color: #000000;
+    letter-spacing: 1.5px;
+    
+    transition-duration: 0.5s;
+    border-bottom: 1px solid #708090;
+    color: #C0C0C0;
+    }
+    input[type="text"]:focus{
+      border-bottom: 2px solid #DDA0DD;
+      color:#ffffff;
+      transform: scale(1.1, 1.1);
+    }
+    select {
+            width: 70%;
+            border-width: 0px;
+            outline: none;
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        select option {
+            background-color: #36454F;
+            font-family: 'Raleway', sans-serif;
+            color: #DDA0DD;
+
+        }
+        h5{
+          color:#ffffff;
+        }
+        input[type="radio"]:after {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background-color: #d1d3d1;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 2.5px solid white;
+}
+input[type="radio"]:checked:after {
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+    background-color: #ebc7eb;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 2.5px solid white;
+    transition-duration: 0.3s;
+}
+label{
+  color: #ffffff;
+}
+  </style>
+  <script>
+
+  </script>
+</head>
+<div>
+  <div id="left">
+    <div id="chart">
+      <canvas id="myChart"></canvas>
+      <canvas id="myChart1"></canvas>
+
+      <input type="submit" class="btn btn-danger" id="submitButton" value="Send" />
+
+    </div>
+  </div>
+  <div id="right">
+    <h1>Configure Parameters</h1>
+    <div id = "input2">
+      <p>Grid Settings</p>
+      <input type="radio" name="abc" onclick="showgrid()" checked="checked">
+      <label>Show Grid</label>
+      <input type="radio" name="abc" onclick="hidegrid()">
+      <label>Hide Grid</label>
+      
+      <div id="color2" >
+        <input type="color" id="bordercolor" name="favcolor" value="#ff0000" oninput="gridcolorchange(this.value)">
+      </div>
+      <p>Text Label Color</p>
+      <div id="color3">
+        <input type="color" id="bordercolor" name="favcolor" value="#ff0000" oninput="labelcolorchange(this.value)">
+
+      </div>
+    </div>
+    <div id="input1">
+      <p>Chart Name</p>
+      <input type="text">
+      <p>Chart Type</p>
+      <select name="cars" id="cars">
+        <option value="volvo">Line Chart</option>
+        <option value="saab">Bar Chart</option>
+        <option value="opel">Pie Chart</option>
+        <option value="audi">Doughnut Chart</option>
+    </select>
+    </div>
+    <div id="input">
+      <p>Point Radius</p>
+      <input type="range" min="1" max="20" value="5" class="slider" id="myRange" oninput="change(this.value)">
+      <div id="color">
+        <input type="color" id="favcolor" name="favcolor" value="#ff0000" oninput="colorchange(this.value)">
+      </div>
+      <p>Border Width</p>
+      <input type="range" min="1" max="6" value="1" class="slider" id="myRange" oninput="borderwidthchange(this.value)">
+      <div id="color1">
+        <input type="color" id="bordercolor" name="favcolor" value="#ff0000" oninput="bordercolorchange(this.value)">
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  var button = document.getElementById("submitButton");
+  submitButton.addEventListener("click", function () {
+    myChart.toBase64Image();
+    // => returns png data url of the image on the canvas
+
+    var b = myChart.toBase64Image('image/jpeg', 1)
+    var a = document.createElement("a"); //Create <a>
+    a.href = b //Image Base64 Goes here
+    a.download = "chart.jpeg"; //File name Here
+    a.click(); //Downloaded file
+  });
+
+  const labels = [
+    'January',
+    'February',
+    'March',
+    'Aprl',
+    'May',
+    'June',
+  ];
+
+  var data = {
+    labels: labels,
+    datasets: [{
+      label: 'My First dataset',
+      backgroundColor: 'rgb(255, 255, 255)',
+      borderColor: 'rgb(255, 255, 255)',
+      borderWidth: 1,
+      // borderDash: [10, 5],
+      data: [0, 10, 5, 2, 20, 30, 45, 22],
+      // lineTension:0,
+      pointBackgroundColor: 'rgb(255,255,0)',
+      pointRadius: 5,
+      // pointRotation:45,
+      // pointborderWidth:3,
+
+    }],
+
+  };
+
+  var config = {
+    type: 'line',
+    data: data,
+    options: {
+      scales:{
+        x:{
+          grid:{
+          color:'#ffffff',
+          display:true
+
+          },
+          ticks:{
+            color:'#ffffff'
+          }
+        },
+        y:{
+          grid:{
+        color:'#ffffff',
+        display:true
+          },
+          ticks:{
+            color:'#ffffff'
+          }
+        }
+      }
+    },
+    responsive: true
+
+
+  };
+  
+
+  myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+  function labelcolorchange(value){
+    var colorid = document.getElementById("color3")
+    colorid.style.backgroundColor = value
+    config.options.scales.x.ticks.color = value
+    config.options.scales.y.ticks.color = value
+   
+    myChart.update();
+  }
+
+  function change(value) {
+    data.datasets[0].pointRadius = value;
+    myChart.destroy();
+    // document.getElementById("myChart").remove();
+    // document.getElementById("chart").remove();
+    // document.getElementById("left").innerHTML = '<div id="chart"></div>'
+    // document.getElementById("chart").innerHTML = '<canvas id = "myChart"></canvas>'
+    var ctx = document.getElementById("myChart").getContext("2d");
+
+    myChart = new Chart(ctx, config)
+  }
+  function showgrid(){
+    config.options.scales.x.grid.display = true;
+    config.options.scales.y.grid.display = true;
+    myChart.update()
+  }
+  function hidegrid(){
+    config.options.scales.x.grid.display = false;
+    config.options.scales.y.grid.display = false;
+    myChart.update()
+
+  }
+  function colorchange(value) {
+    var colorid = document.getElementById("color")
+    colorid.style.backgroundColor = value
+    data.datasets[0].pointBackgroundColor = value;
+    // myChart.destroy();
+    myChart.update();
+    // var ctx = document.getElementById("myChart").getContext("2d");
+
+    // myChart = new Chart(ctx,config)
+
+  }
+  function gridcolorchange(value){
+    var colorid = document.getElementById("color2")
+    colorid.style.backgroundColor = value
+    config.options.scales.x.grid.color = value;
+    config.options.scales.y.grid.color = value;
+
+    myChart.update();
+
+  }
+
+  function bordercolorchange(value) {
+    var colorid = document.getElementById("color1")
+    colorid.style.backgroundColor = value
+    data.datasets[0].borderColor = value;
+    // myChart.destroy();
+    myChart.update();
+
+  }
+
+  function borderwidthchange(value) {
+    data.datasets[0].borderWidth = value;
+    myChart.update();
+  }
+</script>
